@@ -3,7 +3,7 @@
 ./kerbrute userenum --dc CONTROLLER.local -d CONTROLLER.local ad-usernames.txt -v
 
 Enumerate with nmap
-└─$ nmap -p 88 -script-args krb5-enum-users.realm=’10.11.70.89’,userdb=ad-usernames.txt ...DC IP...
+```└─$ nmap -p 88 -script-args krb5-enum-users.realm=’10.11.70.89’,userdb=ad-usernames.txt ...DC IP...```
 
 ### Rubeus
 <i>Attacks include overpass the hash, ticket requests and renewals, ticket management, ticket extraction, harvesting, pass the ticket, AS-REP Roasting, and Kerberoasting. brute force passwords as well as password spray user accounts</i>
